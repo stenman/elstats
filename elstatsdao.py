@@ -1,6 +1,13 @@
 import sqlite3
+import logging
 from sqlite3 import Error
 from datetime import datetime
+
+
+# logging
+LOG = "elstats.log"
+logging.basicConfig(filename=LOG, filemode="a", level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger(__name__)
 
 
 def create_connection(db_file):
@@ -9,12 +16,14 @@ def create_connection(db_file):
     :param db_file: database file
     :return: Connection object or None
     """
+    logger.debug("Creating a database connection...")
+
     conn = None
     try:
         conn = sqlite3.connect(db_file)
         return conn
     except Error as e:
-        print(e)
+        logger.debug("Error when connecting to DB: " + e)
 
     return conn
 
@@ -25,17 +34,20 @@ def create_table(conn, create_table_sql):
     :param create_table_sql: a CREATE TABLE statement
     :return:
     """
-    
+
     try:
         c = conn.cursor()
         c.execute(create_table_sql)
     except Error as e:
-        print(e)
+        logger.debug("Error when creating tables: " + e)
 
 
 def create_tables():
     """ Should only be run once
     """
+
+    logger.debug("Creating database tables...")
+
     database = r"elstats.db"
 
     sql_create_pulse_stats_table = """CREATE TABLE IF NOT EXISTS pulse_stats (
@@ -68,11 +80,11 @@ def create_tables():
     # create tables
     if conn is not None:
         # create pulseStats table
-        print("Creating tables...")
+        logger.debug("Creating table...")
         create_table(conn, sql_create_pulse_stats_table)
-        print("Created tables!")
+        logger.debug("Created table successfully!")
     else:
-        print("Error! cannot create the database connection.")
+        logger.debug("Error when creating the database connection")
 
 
 def save_pulse_stats(data):
@@ -82,6 +94,8 @@ def save_pulse_stats(data):
     :param task:
     :return:
     """
+
+    logger.debug("Saving pulse stats...")
 
     ps = (  
             sanitizeTimeStamp(data["data"]["liveMeasurement"]["timestamp"])
