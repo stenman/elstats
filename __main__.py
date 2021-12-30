@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from python_graphql_client import GraphqlClient
 import asyncio
 import elstatsdao
@@ -8,11 +10,11 @@ import elstatsdao
 
 def main():
     client = GraphqlClient(endpoint="wss://api.tibber.com/v1-beta/gql/subscriptions")
-    authorization = "apiAuthorization"
+    authorization = "authorizationtoken"
 
     query = """
     subscription {
-        liveMeasurement(homeId:"homeId") {
+        liveMeasurement(homeId:"homeid") {
             timestamp
             power
             lastMeterConsumption	

@@ -40,7 +40,7 @@ def create_tables():
 
     sql_create_pulse_stats_table = """CREATE TABLE IF NOT EXISTS pulse_stats (
                 id                              INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-            ,   dateAdded                       DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S.%f', 'now', 'localtime'))
+            ,   dateAdded                       DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'NOW', 'localtime'))
             ,   timestamp                       DATETIME NOT NULL
             ,   power                           REAL
             ,   lastMeterConsumption	        REAL
@@ -110,7 +110,7 @@ def save_pulse_stats(data):
 
     with conn:
         sql = ''' INSERT INTO pulse_stats(
-            timeStamp
+            timestamp
         ,   power
         ,   lastMeterConsumption
         ,   accumulatedConsumption
